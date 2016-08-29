@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+{% set bootstrap_version = '3.0.0' %}
+{% set modernizer_version = '2.6.2' %}
+{% set jquery_version = '1.9.1' %}
+{% set parsley_version = '1.1.16' %}
+{% set awesome_version = '4.0.1' %}
+{% set bootswatch_version = '3.3.7' %}
+{% set bootswatch_theme = 'flatly' %}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <title>{% block title%}Flask on App Engine{% endblock %}</title>
+{#    <link href="//netdna.bootstrapcdn.com/bootstrap/{{ bootstrap_version }}/css/bootstrap.min.css" rel="stylesheet" />#}
+{#    <link href="//netdna.bootstrapcdn.com/font-awesome/{{ awesome_version }}/css/font-awesome.min.css" rel="stylesheet" >#}
+{#    <link href="//netdna.bootstrapcdn.com/bootswatch/{{ bootswatch_version }}/{{ bootswatch_theme }}/bootstrap.min.css" rel="stylesheet" >#}
+{#    <style>  </style> <!-- Bootstrap -->#}
+{#    <link href="/static/css/main.css" rel="stylesheet" />#}
+    <link rel="shortcut icon" href="/static/img/favicon.ico" />
+
+	<!-- Web Fonts -->
+	<link rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Open+Sans:400,300,600,800&amp;subset=cyrillic,latin'>
+
+	<!-- CSS Global Compulsory -->
+	<link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href=/static/css/shop.style.css">
+
+	<!-- CSS Header and Footer -->
+	<link rel="stylesheet" href=/static/css/headers/header-v5.css">
+	<link rel="stylesheet" href=/static/css/footers/footer-v4.css">
+
+	<!-- CSS Implementing Plugins -->
+	<link rel="stylesheet" href=/static/plugins/animate.css">
+	<link rel="stylesheet" href=/static/plugins/line-icons/line-icons.css">
+	<link rel="stylesheet" href=/static/plugins/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href=/static/plugins/scrollbar/css/jquery.mCustomScrollbar.css">
+	<link rel="stylesheet" href=/static/plugins/owl-carousel/owl-carousel/owl.carousel.css">
+	<link rel="stylesheet" href=/static/plugins/revolution-slider/rs-plugin/css/settings.css">
+
+	<!-- CSS Theme -->
+	<link rel="stylesheet" href=/static/css/theme-colors/default.css" id="style_color">
+
+	<!-- CSS Customization -->
+	<link rel="stylesheet" href=/static/css/custom.css">
+
+    {% if menu_order %}
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    {#<script src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>#}
+    {#<script   src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"   integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="   crossorigin="anonymous"></script>#}
+    <script type="text/javascript" src="http://code.jquery.com/ui/1.8.18/jquery-ui.min.js"></script>
+    {#<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sortable/0.9.13/jquery-sortable-min.js"></script>#}
+    <script src="/static/js/jquery.ui.nestedSortable.js"></script>
+    {#<script type="text/javascript" src="http://f.cl.ly/items/0P311r3a2x2C1x0z1w2R/jquery.ui.nestedSortable.js"></script>#}
+    {% else %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/{{ jquery_version }}/jquery.min.js"></script>
+    {% endif %}
+
+    {% block style_block %}{# page-specific CSS #}{% endblock %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/{{ modernizer_version }}/modernizr.min.js"></script>{# Modernizr must be here, above body tag. #}
+    {% block head_script %}{# defer-incapable JS block #}{% endblock %}
+
+    <link href="/static/css/bootstrap-markdown.min.css" rel="stylesheet">
+
+</head>
+<body>
+
+    {# NAV PART START #}
+    <nav class="navbar navbar-default" role="navigation">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Administration</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li{% block page_list %}{% endblock %}><a href="{{ url_for('page_list') }}">Page List</a></li>
+          <li{% block menu_order %}{% endblock %}><a href="{{ url_for('menu_order') }}">Menu Order</a></li>
+          <li><a href="http://flask.pocoo.org/">Flask docs</a></li>
+          <li><a href="http://getbootstrap.com">Bootstrap docs</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Separated link</a></li>
+              <li class="divider"></li>
+              <li><a href="#">One more separated link</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">Link</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Action</a></li>
+              <li><a href="#">Another action</a></li>
+              <li><a href="#">Something else here</a></li>
+              <li class="divider"></li>
+              <li><a href="#">Separated link</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </nav>
+    {# NAV PART END #}
+
+    <div class="container" id="maincontent">
+        {% include 'includes/flash_message.html' %} {# page-level feedback notices #}
+        <div id="body_content">
+            {% block content %}{# main content area #}{% endblock %}
+        </div>
+    </div><!-- /container -->
+    <footer>
+        <div id="footer" class="container">
+            {% block footer %}{% endblock %}
+        </div><!-- /footer -->
+    </footer>
+
+    <script src="//netdna.bootstrapcdn.com/bootstrap/{{ bootstrap_version }}/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/parsley.js/{{ parsley_version }}/parsley-standalone.min.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    {% block tail_script %}{# defer-capable JS block #}{% endblock %}
+    {{ profiler_includes|safe }}
+</body>
+</html>

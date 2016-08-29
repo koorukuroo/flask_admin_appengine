@@ -1,0 +1,331 @@
+{% extends "base.html" %}
+{% set menu_order = 1 %}
+{% block menu_order %} class="active"{% endblock menu_order %}
+
+{% block style_block %}
+<style type="text/css">
+    ol.sortable, ol.sortable ol {
+        margin: 0 0 0 25px;
+        padding: 0;
+        list-style-type: none;
+    }
+
+    ol.sortable {
+        width: 62.5%;
+        float: left;
+        margin: 5% 0 5% 5%;
+        border: 2px dotted #eeeeee;
+    }
+
+    .sortable li {
+        margin: 7px 0 0 0;
+        padding: 0;
+    }
+
+    .sortable li div {
+        border: 1px solid black;
+        padding: 3px;
+        margin: 0;
+        cursor: move;
+    }
+
+    .sortable li[id^="list_1_"] > div {
+        background: #fcc;
+    }
+
+    .sortable li[id^="list_2_"] > div {
+        background: #ffc;
+    }
+</style>
+<script>
+    $().ready(function(){
+        var ns = $('ol.sortable').nestedSortable({
+            forcePlaceholderSize: true,
+            handle: 'div',
+            helper:	'clone',
+            items: 'li',
+            opacity: .6,
+            placeholder: 'placeholder',
+            revert: 250,
+            tabSize: 25,
+            tolerance: 'pointer',
+            toleranceElement: '> div',
+            maxLevels: 3,
+            isTree: true,
+            expandOnHover: 700,
+            startCollapsed: false,
+            connectWith: '.sortable'
+        });
+
+{#        $('.expandEditor').attr('title','Click to show/hide item editor');#}
+{#        $('.disclose').attr('title','Click to show/hide children');#}
+{#        $('.deleteMenu').attr('title', 'Click to delete item.');#}
+{##}
+{#        $('.disclose').on('click', function() {#}
+{#            $(this).closest('li').toggleClass('mjs-nestedSortable-collapsed').toggleClass('mjs-nestedSortable-expanded');#}
+{#            $(this).toggleClass('ui-icon-plusthick').toggleClass('ui-icon-minusthick');#}
+{#        });#}
+{##}
+{#        $('.expandEditor, .itemTitle').click(function(){#}
+{#            var id = $(this).attr('data-id');#}
+{#            $('#menuEdit'+id).toggle();#}
+{#            $(this).toggleClass('ui-icon-triangle-1-n').toggleClass('ui-icon-triangle-1-s');#}
+{#        });#}
+{##}
+{#        $('.deleteMenu').click(function(){#}
+{#            var id = $(this).attr('data-id');#}
+{#            $('#menuItem_'+id).remove();#}
+{#        });#}
+
+{#        $("ol.sortable").fixedsortable({#}
+{#            fixed: "> .static"#}
+{#        });#}
+
+        $('#serialize').click(function(){
+            $('#savestatus').text('저장 중.....')
+            $('#savestatus').attr('style', 'font-weight:bold; color:red;')
+            serialized = $('ol#sortable1').nestedSortable('serialize');
+            $('#serializeOutput1').text(serialized+'\n\n');
+            $.ajax({
+                         data: {'data': serialized, 'kind': 'output1'},
+                         type: 'POST',
+                         url: '/admin/menu_order/data'
+                     });
+            serialized = $('ol#sortable2').nestedSortable('serialize');
+            $('#serializeOutput2').text(serialized+'\n\n');
+            $.ajax({
+                         data: {'data': serialized, 'kind': 'output2'},
+                         type: 'POST',
+                         url: '/admin/menu_order/data',
+                         success: function(data) {
+                         }
+                     });
+            $(document).ajaxComplete(function (event, xhr, settings) {
+                $('#savestatus').text('저장됨')
+                $('#savestatus').attr('style', 'font-weight:bold; color:blue;')
+            });
+{#                     var data = window.JSON.stringify(list.nestable('serialize'));#}
+{#                     $.ajax({#}
+{#                         data: {'data': data, 'kind': output.selector},#}
+{#                         type: 'POST',#}
+{#                         url: '/admin/menu_order/data'#}
+{#                     });#}
+        });
+    });
+
+    function dump(arr,level) {
+        var dumped_text = "";
+        if(!level) level = 0;
+
+        //The padding given at the beginning of the line.
+        var level_padding = "";
+        for(var j=0;j<level+1;j++) level_padding += "    ";
+
+        if(typeof(arr) == 'object') { //Array/Hashes/Objects
+            for(var item in arr) {
+                var value = arr[item];
+
+                if(typeof(value) == 'object') { //If it is an array,
+                    dumped_text += level_padding + "'" + item + "' ...\n";
+                    dumped_text += dump(value,level+1);
+                } else {
+                    dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+                }
+            }
+        } else { //Strings/Chars/Numbers etc.
+            dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
+        }
+        return dumped_text;
+    }
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+    <h1 id="">Menu Order</h1>
+    <hr>
+{#    <div class="row">#}
+{#        <div class="col-md-4">#}
+{#            <div id="nestable-menu">#}
+{#                <button type="button" data-action="expand-all" class="btn btn-white btn-sm">Expand All</button>#}
+{#                <button type="button" data-action="collapse-all" class="btn btn-white btn-sm">Collapse All</button>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+
+    <div class="row">
+
+        <div class="col-lg-6">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h3>Non-assigned Items</h3>
+                </div>
+                <div class="ibox-content">
+
+                    <p  class="m-b-lg">
+                        메뉴에 할당되어 있지 않은 아이템들입니다.<br>
+                        아래 아이템을 메뉴로 설정하기 위해서는 이 메뉴를 오른쪽으로 드래그앤드롭하세요.<br>
+                        아이템의 생성은 "Page List"에서 하세요.
+                    </p>
+                    <ol class="sortable" id="sortable1">
+                        <li id="static"><div style="border: 0px solid white;">여기 아래로 옮기세요</div></li>
+                        {% for page in nonassigned %}
+                            {% set page_id = page.key.id() %}
+                        <li id="list_1_{{ page_id }}">
+                            <div>{{ page.page_name }}</div>
+                        </li>
+                        {% endfor %}
+{#                        <li id="list_1_1"><div>Item 1.1</div>#}
+{#                        <li id="list_1_2"><div>Item 1.2</div>#}
+{#                            <ol>#}
+{#                                <li id="list_1_3"><div>Sub Item 1.2.1</div>#}
+{#                                <li id="list_1_4"><div>Sub Item 1.2.2</div>#}
+{#                                <li id="list_1_5"><div>Sub Item 1.2.3</div>#}
+{#                                <li id="list_1_6"><div>Sub Item 1.2.4</div>#}
+{#                            </ol>#}
+{#                        <li id="list_1_7" class="no-nest"><div>Item 1.3 (no-nesting)</div>#}
+{#                        <li id="list_1_8" class="no-nest"><div>Item 1.4 (no-nesting)</div>#}
+{#                        <li id="list_1_9"><div>Item 1.5</div>#}
+{#                        <li id="list_1_10"><div>Item 1.6</div>#}
+{#                            <ol>#}
+{#                                <li id="list_1_11"><div>Sub Item 1.6.1</div>#}
+{#                                <li id="list_1_12" class="no-nest"><div>Sub Item 1.6.2 (no-nesting)</div>#}
+{#                                <li id="list_1_13"><div>Sub Item 1.6.3</div>#}
+{#                                <li id="list_1_14"><div>Sub Item 1.6.4</div>#}
+{#                            </ol>#}
+{#                        <li id="list_1_15"><div>Item 1.7</div>#}
+{#                        <li id="list_1_16"><div>Item 1.8</div>#}
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h3>Assigned Items</h3>
+                </div>
+                <div class="ibox-content">
+
+                    <p class="m-b-lg">
+                        메뉴를 구성하기 위한 메뉴의 순서를 정합니다.<br>
+                        한 칸 들여쓰기는 하부메뉴,<br>
+                        두 칸 들여쓰기는 한 칸 들여쓰기의 세부 페이지가 됩니다.
+                    </p>
+                    <ol class="sortable" id="sortable2">
+                        <li id="static"><div style="border: 0px solid white;">여기 아래로 옮기세요</div></li>
+                        {{ assigned | safe }}
+{#                        <li class="placeholder">Drop here</li>#}
+{#                        {% for page in assigned %}#}
+{#                            {% set page_id = page.key.id() %}#}
+{#                            {% if page.depth == 0 %}#}
+{#                            <li id="list_2_{{ page_id }}">#}
+{#                                <div>{{ page.page_name }}</div>#}
+{##}
+{#                            {% elif page.depth == 1 %}#}
+{#                            <ol>#}
+{#                                <li id="list_2_{{ page_id }}">#}
+{#                                    <div>{{ page.page_name }}</div>#}
+{##}
+{#                            {% elif page.depth == 2 %}#}
+{#                            <ol>#}
+{#                                <li id="list_2_{{ page_id }}">#}
+{#                                    <div>{{ page.page_name }}</div>#}
+{#                            {% endif %}#}
+{#                        {% endfor %}#}
+{#                        <li id="list_2_1"><div>Item 2.1</div>#}
+{#                        <li id="list_2_2"><div>Item 2.2</div>#}
+{#                            <ol>#}
+{#                                <li id="list_2_3"><div>Sub Item 2.2.1</div>#}
+{#                                <li id="list_2_4"><div>Sub Item 2.2.2</div>#}
+{#                                <li id="list_2_5"><div>Sub Item 2.2.3</div>#}
+{#                                <li id="list_2_6"><div>Sub Item 2.2.4</div>#}
+{#                            </ol>#}
+{#                        <li id="list_2_7" class="no-nest"><div>Item 2.3 (no-nesting)</div>#}
+{#                        <li id="list_2_8" class="no-nest"><div>Item 2.4 (no-nesting)</div>#}
+{#                        <li id="list_2_9"><div>Item 2.5</div>#}
+{#                        <li id="list_2_10"><div>Item 2.6</div>#}
+{#                            <ol>#}
+{#                                <li id="list_2_11"><div>Sub Item 2.6.1</div>#}
+{#                                <li id="list_2_12" class="no-nest"><div>Sub Item 2.6.2 (no-nesting)</div>#}
+{#                                <li id="list_2_13"><div>Sub Item 2.6.3</div>#}
+{#                                <li id="list_2_14"><div>Sub Item 2.6.4</div>#}
+{#                            </ol>#}
+{#                        <li id="list_2_15"><div>Item 2.7</div>#}
+{#                        <li id="list_2_16"><div>Item 2.8</div>#}
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <p>
+            <input id="serialize" name="serialize" type="submit" value="저장하기">&nbsp;&nbsp;<span id="savestatus"></span>
+        </p>
+        <pre id="serializeOutput1">
+		</pre>
+        <pre id="serializeOutput2">
+		</pre>
+    </div>
+
+
+{% endblock content %}
+
+{% block footer %}
+{#    {% include 'new_example.html' %} {# pull in new_page form (modal dialog) #}
+{% endblock footer %}
+
+{% block tail_script %}
+{#    <script src="/static/js/jquery.nestable.js"></script>#}
+
+
+    <script>
+{#         $(document).ready(function(){#}
+{##}
+{#             var updateOutput = function (e, kind) {#}
+{#                 var list = e.length ? e : $(e.target),#}
+{#                         output = list.data('output');#}
+{##}
+{#                 if (window.JSON) {#}
+{#                     output.val(window.JSON.stringify(list.nestable('serialize')));//, null, 2));#}
+{#                     var data = window.JSON.stringify(list.nestable('serialize'));#}
+{#                     $.ajax({#}
+{#                         data: {'data': data, 'kind': output.selector},#}
+{#                         type: 'POST',#}
+{#                         url: '/admin/menu_order/data'#}
+{#                     });#}
+{#                 } else {#}
+{#                     output.val('JSON browser support required for this page.');#}
+{#                 }#}
+{#             };#}
+{#             // activate Nestable for list 1#}
+{#             $('#nestable').nestable({#}
+{#                 group: 1#}
+{#             }).on('change', updateOutput);#}
+{##}
+{#             // activate Nestable for list 2#}
+{#             $('#nestable2').nestable({#}
+{#                 group: 1#}
+{#             }).on('change', updateOutput);#}
+{##}
+{#             // output initial serialised data#}
+{#             updateOutput($('#nestable').data('output', $('#nestable-output')));#}
+{#             updateOutput($('#nestable2').data('output', $('#nestable2-output')));#}
+{##}
+{#             $('#nestable-menu').on('click', function (e) {#}
+{#                 var target = $(e.target),#}
+{#                         action = target.data('action');#}
+{#                 if (action === 'expand-all') {#}
+{#                     $('.dd').nestable('expandAll');#}
+{#                 }#}
+{#                 if (action === 'collapse-all') {#}
+{#                     $('.dd').nestable('collapseAll');#}
+{#                 }#}
+{#             });#}
+{#         });#}
+    </script>
+
+
+
+{% endblock tail_script %}

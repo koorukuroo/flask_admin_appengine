@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block page_list %} class="active"{% endblock page_list %}
+
+
+{% block style_block %}
+    <style type="text/css">
+        table.table { width: 60%; }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <h1 id="">All pages</h1>
+    <hr>
+    <table class="table table-bordered table-striped" style="width:100%;">
+        <thead>
+            <tr>
+                <th>Page Name</th>
+                <th>URL Name</th>
+                <th width="20%">Updated</th>
+                <th width="5%">&nbsp;</th>
+                <th width="5%">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for page in pages %}
+                {% set page_id = page.key.id() %}
+                <tr>
+                    <td>{{ page.page_name }}</td>
+                    <td>{{ page.url_name }}</td>
+{#                    <td>{{ page.added_by }}</td>#}
+                    <td class="nowrap">{{ page.timestamp.strftime('%b %d, %Y %I:%M %p') }}</td>
+                    <td>
+                        <a href="{{ url_for('page_edit', page_id=page_id) }}" class="btn btn-success">Edit</a>
+                    </td>
+                    <td>
+                        <form method="post" action="{{ url_for('page_delete', page_id=page_id) }}">
+                            <button class="btn">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7">No pages yet</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p>
+        <a class="btn btn-primary" href="/admin/page_create">
+            <i class="icon-plus-sign icon-white"></i>
+            New page
+        </a>
+    </p>
+
+
+
+{% endblock content %}
+
+{% block footer %}
+{#    {% include 'new_example.html' %} {# pull in new_page form (modal dialog) #}
+{% endblock footer %}
+
+{% block tail_script %}
+{#    <script>#}
+{#        var FormHelpers = {#}
+{#            validate: function (form, evt) {#}
+{#                // Form validation for modal dialog#}
+{#                var page_name = form.find('#page_name').val();#}
+{#                var page_description = form.find('#page_description').val();#}
+{#                if (!(page_name)) {#}
+{#                    evt.preventDefault();#}
+{#                    Utils.renderFieldErrorTooltip('#page_name', 'Name is required', 'right');#}
+{#                }#}
+{#                if (!(page_description)) {#}
+{#                    evt.preventDefault();#}
+{#                    Utils.renderFieldErrorTooltip('#page_description', 'Description is required', 'right');#}
+{#                }#}
+{#            },#}
+{#            init: function () {#}
+{#                var self = this;#}
+{#                var page_form = $('#new-page-form');#}
+{#                page_form.on('submit', function (evt) {#}
+{#                    self.validate(page_form, evt)#}
+{#                });#}
+{#            }#}
+{#        };#}
+{#        $(document).ready(function() {#}
+{#            FormHelpers.init();#}
+{#        });#}
+{#    </script>#}
+{% endblock tail_script %}

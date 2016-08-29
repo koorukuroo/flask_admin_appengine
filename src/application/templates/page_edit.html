@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block page_list %} class="active"{% endblock page_list %}
+
+{% block content %}
+    <h3>Edit Page</h3>
+    <form id="edit-page" class="well"
+          action="{{ url_for('page_edit', page_id=page.key.id()) }}" method="post" accept-charset="utf-8">
+        <fieldset>
+            {{ form.hidden_tag() }}
+            <div class="control-group">
+                <div class="control-label">{{ form.page_name.label }}</div>
+                <div class="controls">
+                    {{ form.page_name( **{'class':'form-control'})|safe }}
+                    {% if form.page_name.errors %}
+                    <ul class="errors">
+                        {% for error in form.page_name.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <div>&nbsp;</div>
+            <div class="control-group">
+                <div class="control-label">{{ form.url_name.label }} ( 인터넷 페이지 주소 e.g., http://math.unist.ac.kr/url_name )</div>
+                <div class="controls">
+                    {{ form.url_name( **{'class':'form-control'})|safe }}
+                    {% if form.url_name.errors %}
+                    <ul class="errors">
+                        {% for error in form.url_name.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <div>&nbsp;</div>
+            <div class="control-group">
+                <div class="control-label">{{ form.page_content.label }}</div>
+                <div class="controls">
+                    {{ form.page_content( **{'data-provide':'markdown', 'rows':'12'})|safe }}
+                    {% if form.page_content.errors %}
+                    <ul class="errors">
+                        {% for error in form.page_content.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <div>&nbsp;</div>
+            <div class="control-group">
+                <div class="controls">
+                    <input class="btn btn-primary" type="submit" value="Save changes"/>
+                    <a class="btn" href="{{  url_for('page_list') }}">Cancel</a>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+{% endblock content %}
+
+{% block tail_script %}
+    <script src="/static/js/bootstrap-markdown.js"></script>
+    <script src="http://www.codingdrama.com/bootstrap-markdown/js/markdown.js" rel="stylesheet"></script>
+{% endblock tail_script %}

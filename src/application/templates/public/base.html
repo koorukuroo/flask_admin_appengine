@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <title>{% block title%}Flask on App Engine{% endblock %}</title>
+    {% block style_block %}{# page-specific CSS #}{% endblock %}
+    {% block head_script %}{# defer-incapable JS block #}{% endblock %}
+</head>
+<body>
+{{ nav|safe }}aaaa
+{% block content %}{# main content area #}{% endblock %}
+{% block footer %}{% endblock %}
+{% block tail_script %}{# defer-capable JS block #}{% endblock %}
+{{ profiler_includes|safe }}
+</body>
+</html>
